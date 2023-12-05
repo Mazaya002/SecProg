@@ -10,8 +10,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $check_query = "SELECT id FROM users WHERE username = ? OR email = ?";
   $stc=$conn->prepare($check_query);
   $stc->bind_param("ss",$username,$email);
-  $check_result = $conn->execute($stc);
-
+  $stc->execute();
+  $check_result = $stc->get_result();
+  
   if ($check_result->num_rows > 0) {
     echo "Username or Email already exists";
   } else {
@@ -20,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Query to insert new user
     $insert_query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-    $sti=$conn_>prepare($insert_query);
+    $sti=$conn->prepare($insert_query);
     $sti->bind_param ("sss",$username,$hashed_password,$email);
-    $success = $conn->execute($sti);
+    $success = $sti->execute();
 
     if ($success) {
       echo "Registration successful";
     } else {
-      echo "Error: " . $conn->error;
+      echo "Error: " . $sti->error;
     }
   }
 
