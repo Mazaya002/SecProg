@@ -2,11 +2,27 @@
 include 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  $email = $_POST['email'];
+  //input sanitaztion
+  function sanitize($input){
+    $input= trim($input);
+    $input= stripslashes($input);
+    $input= htmlspecialchars($data, ENT_QUOTES);
+    return $input;
+  }
 
-  // Check if username or email already exists
+  $username = sanitize($_POST['username']);
+  $password = sanitize($_POST['password']);
+  $email = sanitize($_POST['email']);
+
+  //validasi input 
+  if(empty($username)|| empty($email)||empty($password)){
+    echo "Cannot be empty";
+  } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+    echo "Invalid email format"
+  } elseif(strlen($password)<6){
+    echo "password must be >=8 charas long"
+  }else{
+      // Check if username or email already exists
   $check_query = "SELECT id FROM users WHERE username = ? OR email = ?";
   $stc=$conn->prepare($check_query);
   $stc->bind_param("ss",$username,$email);
@@ -25,11 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sti->bind_param ("sss",$username,$hashed_password,$email);
     $success = $sti->execute();
 
-    if ($success) {
+     if ($success) {
       echo "Registration successful";
-    } else {
-      echo "Error: " . $sti->error;
+      } else {
+        echo "Error: " . $sti->error;
+      }
     }
+
+
   }
 
   $conn->close();
