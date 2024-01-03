@@ -1,6 +1,9 @@
 <?php 
     require('scripts/csrf.php');
     $csrftoken = generate_token();
+    if ( $_SESSION['loggedin'] !== TRUE){
+        header('Location: ./login.php');
+    }
  ?>
 
 <!DOCTYPE html>

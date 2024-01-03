@@ -53,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['loggedin'] = TRUE;
             $_SESSION['username'] = $row['username'];
             $_SESSION['id'] = $row['id'];
+
             $login= true;
             echo "Logged in successfully";
             header('Location:../index.php');
