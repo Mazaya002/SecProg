@@ -55,6 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id'] = $row['id'];
             $login= true;
             echo "Logged in successfully";
+            header('Location:../index.php');
         } else {
             // Password is not valid
             echo "Incorrect password";
