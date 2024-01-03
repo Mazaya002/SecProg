@@ -30,6 +30,7 @@
                     <button type="submit" class="login-button">Login</button>
                 </div>
             </form>
+            <h1>not member yet ? <a href="./register.php">sign up</a></h1>
         </div>
     </body>
 </html>
