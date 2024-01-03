@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   function sanitize($input){
     $input= trim($input);
     $input= stripslashes($input);
-    $input= htmlspecialchars($data, ENT_QUOTES);
+    $input= htmlspecialchars($input, ENT_QUOTES);
     return $input;
   }
 
@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
      if ($success) {
       echo "Registration successful";
+      header('Location:../login.php')
       } else {
         echo "Error: " . $sti->error;
       }
