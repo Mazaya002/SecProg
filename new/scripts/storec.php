@@ -22,7 +22,7 @@
             echo "</div>";
         }
     } else {
-        echo "nothing to see here atm. Will add smtg in the future";
+        echo "<h1>nothing to see here atm. Will add smtg in the future</h1>";
     }
     $load->close();
     $conn->close();
