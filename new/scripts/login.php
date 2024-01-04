@@ -1,6 +1,7 @@
 <?php
 include 'db.php';
 require ('session.php');
+require ('csrf.php');
 session_start();
 $login= false;
 function checkattempt($username,$conn){
@@ -40,6 +41,11 @@ function clean_input($data) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $receivedToken = $_POST['csrf_token'];
+    if (!verifycsrftoken($receivedToken)) {
+        //if false exit
+        exit("CSRF token verification failed!");
+    }
     $username = clean_input($_POST['username']);
     $password = clean_input($_POST['password']);
     if(!checkattempt($username,$conn)){

@@ -24,6 +24,7 @@
         </div>
         <div class="card">
             <form method="post" action="./scripts/login.php">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES); ?>">
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <div class="buttons">
