@@ -3,18 +3,24 @@ include 'db.php';
 
 session_start();
 $login= false;
-function checkattempt($username){
+function checkattempt($username,$conn){
     $max= 5;
     $lock_time= 3600;
-    if(isset($_SESSION['login_attempt'][$username])){
-        $attempt= $_SESSION['login_attempt'][$username]['attempt'];
-        $time= $_SESSION['login_attempt'][$username]['time'];
-        $curr_time= time();
 
-        if(($curr_time-$time)<$lock_time && $attempt>=$max){
+    $ril= $conn->prepare("SELECT attempts, UNIX_TIMESTAMP(last_attempt) FROM attempts WHERE username = ?");
+    $ril->bind_param("s",$username);
+    $ril->execute();
+    $result= $ril->get_result();
+    if($result->num_rows === 1){
+        $row = $result->fetch_assoc();
+        $attempts = $row['attempts'];
+        $lastAttemptTime = $row['last_attempt'];
+        $currTime = time();
+
+        if(($curr_time-$lastAttemptTime)<$lock_time && $attempt>=$max){
             return false;
-        }elseif (($curr_time-$time)>$lock_time){
-            unset ($_SESSION['login_attempt'][$username]);//reset attempt count
+        }elseif (($curr_time-$lastAttemptTime)>$lock_time){
+            $resetril= $conn->prepare("UPDATE attempts SET attempts = 0, last_attempt = CURRENT_TIMESTAMP WHERE username= ?");//reset attempt count
             return true;
         }else{
             return true;//percobaan masih dalam batas dan melebihiwaktu
@@ -34,8 +40,8 @@ function clean_input($data) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = clean_input($_POST['username']);
     $password = clean_input($_POST['password']);
-    if(!checkattempt($username)){
-        echo "account locked";
+    if(!checkattempt($username,$conn)){
+        die("Too many failed attempts. Account has been locked.");
         exit();
     }
 
@@ -70,14 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $login= false;
     }
     if($login=== false){
-        if (isset($_SESSION['login_attempt'][$username])){
-            $_SESSION['login_attempt'][$username]=[
-                'attempt'=>1,
-                'time'=>time()
-            ];
-        }else{
-            $_SESSION['login_attempt'][$username]['attempt']++;
-        }
+        //update attempts
+        $updateril=$conn->prepare("INSERT INTO attempts (username, attempts, last_attempt) VALUES (?, 1, CURRENT_TIMESTAMP) ON DUPLICATE KEY UPDATE attempts = attempts + 1, last_attempt = CURRENT_TIMESTAMP");
+        $updateril->bind_param("s", $username);
+        $updateril->execute();
     }
     $stmt->close();
     $conn->close();
