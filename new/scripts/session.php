@@ -11,7 +11,7 @@
         return $token;
     }
 
-    function validate_session($conn, $id){
+    function validate_session($conn, $id, $sessionToken){
         $val_sess=$conn->prepare("SELECT session_token FROM user_sessions WHERE user_id = ?");
         $val_sess->bind_param("i", $id);
         $val_sess->execute();
