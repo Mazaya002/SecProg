@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-
+require ('session.php');
 session_start();
 $login= false;
 function checkattempt($username,$conn){
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['loggedin'] = TRUE;
             $_SESSION['username'] = $row['username'];
             $_SESSION['id'] = $row['id'];
-
+            $_SESSION['sess_token']= gen_sess_token($row['id'], $conn);
             $login= true;
             echo "Logged in successfully";
             header('Location:../index.php');
