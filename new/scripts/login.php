@@ -21,6 +21,8 @@ function checkattempt($username,$conn){
             return false;
         }elseif (($curr_time-$lastAttemptTime)>$lock_time){
             $resetril= $conn->prepare("UPDATE attempts SET attempts = 0, last_attempt = CURRENT_TIMESTAMP WHERE username= ?");//reset attempt count
+            $resetril->bind_param("s",$username);
+            $resetril->execute();
             return true;
         }else{
             return true;//percobaan masih dalam batas dan melebihiwaktu
