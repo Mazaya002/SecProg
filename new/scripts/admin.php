@@ -1,10 +1,16 @@
 <?php
     include 'db.php';
+    function clean_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
     if (isset($_POST['submit'])) {//insert
-        $title= $_POST['title'];
+        $title=htmlspecialchars( $_POST['title']);
         $image= $_POST['image'];
-        $price= $_POST['price'];
-        $rating= $_POST['rating'];
+        $price=htmlspecialchars( $_POST['price']);
+        $rating=htmlspecialchars( $_POST['rating']);
         // Handle image upload
         $attachment = $_FILES['image'];
         $fileinfo = pathinfo($attachment['name']);
@@ -48,7 +54,7 @@
 
     } elseif (isset($_POST['delete_row'])) {
         //get id(title) from hidden input field
-        $del_title=$_POST['delete_title']
+        $del_title=clean_input($_POST['delete_title'])
         //delete all data on the row
         $delsql = $conn->prepare("DELETE FROM store WHERE title = ?");
         $delsql->bind_param("s", $del_title);
