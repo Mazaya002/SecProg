@@ -1,8 +1,10 @@
 <?php 
     require('scripts/csrf.php');
-    $csrftoken = generate_token();
+    require('scripts/session.php');
     if ( $_SESSION['loggedin'] !== TRUE){
         header('Location: ./login.php');
+    }else{
+        validate_session($conn, $_SESSION['id']);
     }
  ?>
 

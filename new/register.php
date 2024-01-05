@@ -1,8 +1,6 @@
 
 <?php 
     require('scripts/register.php');
-    require('scripts/csrf.php');
-    $csrftoken = generate_token();
  ?>
  <!DOCTYPE html>
  <html>

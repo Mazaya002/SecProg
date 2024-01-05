@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['sess_token']= gen_sess_token($row['id'], $conn);
             $login= true;
             echo "Logged in successfully";
-            header('Location:../index.php');
+            header('Location:../admin.php');
         } else {
             // Password is not valid
             echo "Incorrect password";
